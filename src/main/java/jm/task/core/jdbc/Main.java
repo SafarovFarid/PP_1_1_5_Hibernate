@@ -1,21 +1,29 @@
 package jm.task.core.jdbc;
 
-import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
-import jm.task.core.jdbc.service.UserServiceImpl;
-import jm.task.core.jdbc.util.Util;
 
+import jm.task.core.jdbc.model.User;
+import jm.task.core.jdbc.service.UserService;
+import jm.task.core.jdbc.service.UserServiceImpl;
 import java.sql.*;
 
 public class Main {
+    private final static UserService userService = new UserServiceImpl();
+
     public static void main(String[] args) throws SQLException {
-        Util util = new Util();
-        String sqlCommand = "CREATE TABLE products (Id INT PRIMARY KEY AUTO_INCREMENT, ProductName VARCHAR(20), Price INT)";
-        try (Connection connection = util.getConnection()) {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlCommand);
-        } catch (Exception e) {
-            e.printStackTrace();
+        userService.createUsersTable();
+        userService.saveUser("Константин", "Яковлев", (byte) 78);
+        System.out.printf("User с именем – %s добавлен в базу данных\n", "Константин");
+        userService.saveUser("Филип", "Трамп", (byte) 74);
+        System.out.printf("User с именем – %s добавлен в базу данных\n", "Филип");
+        userService.saveUser("Мелания", "Шувалова", (byte) 59);
+        System.out.printf("User с именем – %s добавлен в базу данных\n", "Мелания");
+        userService.saveUser("Алексей", "Кондратьев", (byte) 74);
+        System.out.printf("User с именем – %s добавлен в базу данных\n", "Алексей");
+        for (User us: userService.getAllUsers()) {
+            System.out.println(us);
         }
+        userService.cleanUsersTable();
+        userService.dropUsersTable();
         // реализуйте алгоритм здесь
     }
 }
