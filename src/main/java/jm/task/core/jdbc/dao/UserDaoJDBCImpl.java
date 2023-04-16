@@ -16,7 +16,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        String str ="CREATE TABLE IF NOT EXISTS `user`.`users` ( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(255) NULL, `lastName` VARCHAR(255) NULL,  `age` INT NULL,  PRIMARY KEY (`id`))ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
+        String str ="CREATE TABLE IF NOT EXISTS `user`.`user` ( `id` INT NOT NULL AUTO_INCREMENT, `name` VARCHAR(255) NULL, `lastName` VARCHAR(255) NULL,  `age` INT NULL,  PRIMARY KEY (`id`))ENGINE = InnoDB DEFAULT CHARACTER SET = utf8;";
         try(Statement statement = connection.createStatement()){
             statement.executeUpdate(str);
         } catch (SQLException e) {
