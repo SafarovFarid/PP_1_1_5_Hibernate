@@ -5,7 +5,7 @@ package jm.task.core.jdbc;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.service.UserService;
 import jm.task.core.jdbc.service.UserServiceImpl;
-
+import static jm.task.core.jdbc.util.Util.getSessionFactory;
 
 
 import java.sql.*;
@@ -27,11 +27,17 @@ public class Main {
         System.out.printf("User с именем – %s добавлен в базу данных\n", "Мелания");
         userService.saveUser("Алексей", "Кондратьев", (byte) 74);
         System.out.printf("User с именем – %s добавлен в базу данных\n", "Алексей");
+
+
         for (User us: userService.getAllUsers()) {
             System.out.println(us);
         }
         userService.cleanUsersTable();
         userService.dropUsersTable();
+
+        getSessionFactory().close();
+
+
         // реализуйте алгоритм здесь
     }
 }

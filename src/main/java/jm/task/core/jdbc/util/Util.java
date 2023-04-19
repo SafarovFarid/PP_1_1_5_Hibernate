@@ -1,28 +1,56 @@
 package jm.task.core.jdbc.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import jm.task.core.jdbc.model.User;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.cfg.Environment;
+import org.hibernate.service.ServiceRegistry;
 
-import static java.lang.Class.forName;
+import java.util.Properties;
 
-public class Util {
-    private static final String DB_DRIVER = "java.sql.Driver";
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/user?useUnicode=yes&characterEncoding=UTF-8";
-    private static final String DB_USERNAME = "root";
-    private static final String DB_PASSWORD = "1q2w3e4r5t6Y7";
 
-    public static Connection getConnection() {
-        Connection connection = null;
-        try{
-            connection = DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
-            Class.forName(DB_DRIVER);
-            return connection;
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
+public class Util implements AutoCloseable{
+    public static SessionFactory sessionFactory;
+
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory == null) {
+
+            try {
+                Configuration configuration = new Configuration();
+
+                // Hibernate settings equivalent to hibernate.cfg.xml's properties
+                Properties settings = new Properties();
+                settings.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
+                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/user?useUnicode=yes&characterEncoding=UTF-8");
+                settings.put(Environment.USER, "root");
+                settings.put(Environment.PASS, "1q2w3e4r5t6Y7");
+                settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
+
+                settings.put(Environment.SHOW_SQL, "true");
+
+                settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
+
+                settings.put(Environment.HBM2DDL_AUTO, "");
+
+                configuration.setProperties(settings);
+
+                configuration.addAnnotatedClass(User.class);
+
+                ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
+                        .applySettings(configuration.getProperties()).build();
+
+                sessionFactory = configuration.buildSessionFactory(serviceRegistry);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        return connection;
+        return sessionFactory;
     }
-    // реализуйте настройку соеденения с БД
 
+    @Override
+    public void close() throws Exception {
+        sessionFactory.close();
+    }
 }
